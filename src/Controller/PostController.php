@@ -29,7 +29,7 @@ class PostController extends AbstractController
     #[Route('/post/new')]
     public function create(Request $request, ManagerRegistry $doctrine): Response
     {
-
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
 
@@ -50,6 +50,7 @@ class PostController extends AbstractController
     #[Route('/post/delete/{id}', name: 'delete_post', requirements: ['id' => '\d+'])]
     public function delete(Post $post, ManagerRegistry $doctrine): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $em = $doctrine->getManager();
         $em->remove($post);
         $em->flush();
@@ -60,7 +61,7 @@ class PostController extends AbstractController
     #[Route('/post/edit/{id}', name: 'edit_post', requirements: ['id' => '\d+'])]
     public function update(Request $request, Post $post, ManagerRegistry $doctrine): Response
     {
-
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -77,6 +78,7 @@ class PostController extends AbstractController
     public function duplicate(Request $request, Post $post, ManagerRegistry $doctrine): Response
     {
 
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $copyPost = clone ($post);
 
         $em = $doctrine->getManager();

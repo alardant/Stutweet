@@ -13,8 +13,15 @@
 		<label for="username" class="form-label">Nom d'utilisateur</label>
 		<input type="text" name="_username" id="username" value="{{last_username}}" class="form-control" required>
 		<label for="password" class="form-label">Mot de passe</label>
-		<input
-		type="password" name="_password" id="password" class="form-control" required>
+		<div class="input-group">
+			<input type="password" name="_password" id="user_password" class="form-control" required>
+			<div class="input-group-append">
+				<span role="button" class="input-group-text" onclick="togglePassword()">
+					<i class="bi bi-eye" id="eye"></i>
+					<i class="bi bi-eye-slash d-none" id="eye-slash"></i>
+				</span>
+			</div>
+		</div>
 
 		{# Redirect after a successfull connexion #}
 		<input type="hidden" name="_target_path" value="/">
