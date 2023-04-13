@@ -3,25 +3,24 @@
 {% block body %}
 
 	<div class="d-flex justify-content-around flex-wrap container mt-5">
-		<div class="card" style="width: 18rem;">
-			<img class="card-img-top" src="..." alt="Card image cap">
-			<div class="card-body">
-				<h5 class="card-title">
-					title</h5>
-				<p class="card-text">
-					quick example text to build on the card title and make up the bulk of the card's content.</p>
-				<a href="#" class="btn btn-primary">Go somewhere</a>
-			</div>
-		</div>
+		{% for post in posts %}
 
-		<div class="card" style="width: 18rem;">
-			<img class="card-img-top" src="..." alt="Card image cap">
-			<div class="card-body">
-				<h5 class="card-title">Card title</h5>
-				<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card' s content.</p>
-				<a href="#" class="btn btn-primary">
-					somewhere</a>
+			<div class="card" style="width: 18rem;">
+				{% if post.image %}
+					<img class="card-img-top" src={{post.image}} alt={{post.title}}>
+				{% endif %}
+				<div class="card-body">
+					{% if post.title %}
+						<h5 class="card-title">{{post.title}}</h5>
+					{% endif %}
+					<p class="card-text">{{post.content}}</p>
+
+					<a href={{ path('delete_post', {'id' : post.id} ) }} class="btn btn-danger">Supprimer</a>
+					<a href={{ path('edit_post', {'id' : post.id} ) }} class="btn btn-warning">Modifier</a>
+					<a href={{ path('copy_post', {'id' : post.id} ) }} class="btn btn-info">Copier</a>
+				</div>
 			</div>
-		</div>
-	</div>
-{% endblock %}
+
+		{% endfor %}
+
+	{% endblock %}

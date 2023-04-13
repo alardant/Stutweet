@@ -2,22 +2,27 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity]
+#[ORM\Table(name: 'Post')] //Pour renommer l'entité)
 class Post
 {
-
+    #[ORM\Id()]
+    #[ORM\GeneratedValue()]
+    #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[Assert\Length(min: 0, max: 150, maxMessage: 'Le titre ne doit pas faire plus de 150 caractères', minMessage: 'Le titre doit faire moins de 0 caractères')]
+    #[ORM\Column(type: 'string', nullable: true, length: 150)]
     private ?string $title = null;
 
-    #[Assert\NotBlank(message: 'Le contenu ne doit pas être vide')]
+    #[ORM\Column(type: 'text', length: 320)]
     private string $content;
 
-    #[Assert\NotBlank(message: 'L\'URL de l\'image ne doit pas etre vide')]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $image = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
     private $user;
 
 
@@ -33,7 +38,7 @@ class Post
         return $this;
     }
 
-    public function getTitle(): string
+    public function getTitle(): mixed
     {
         return $this->title;
     }
@@ -57,7 +62,7 @@ class Post
         return $this;
     }
 
-    public function getImage(): string
+    public function getImage(): mixed
     {
         return $this->image;
     }

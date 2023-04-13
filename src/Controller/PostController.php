@@ -7,32 +7,82 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\PostType;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
 class PostController extends AbstractController
 {
-    #[Route('/')]
-    public function index(): Response
+    #[Route('/', name: 'home')]
+    public function index(ManagerRegistry $doctrine): Response
     {
+        $repository = $doctrine->getRepository(Post::class);
+        $posts = $repository->findAll();
+
         return $this->render(
-            'post/index.html.twig'
+            'post/index.html.twig',
+            [
+                'posts' => $posts
+            ]
         );
     }
 
     #[Route('/post/new')]
-    public function create(Request $request): Response
+    public function create(Request $request, ManagerRegistry $doctrine): Response
     {
 
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
-        dump($post);
+
         $form->handleRequest($request);
-        dump($post);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            // var_dump($post);
+            $em = $doctrine->getManager();
+            $em->persist($post);
+            $em->flush();
+            return $this->redirectToRoute('home');
         }
         return $this->render('post/form.html.twig', [
             'post_form' => $form->createView()
         ]);
+    }
+
+    #[Route('/post/delete/{id}', name: 'delete_post', requirements: ['id' => '\d+'])]
+    public function delete(Post $post, ManagerRegistry $doctrine): Response
+    {
+        $em = $doctrine->getManager();
+        $em->remove($post);
+        $em->flush();
+
+        return $this->redirectToRoute('home');
+    }
+
+    #[Route('/post/edit/{id}', name: 'edit_post', requirements: ['id' => '\d+'])]
+    public function update(Request $request, Post $post, ManagerRegistry $doctrine): Response
+    {
+
+        $form = $this->createForm(PostType::class, $post);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $doctrine->getManager();
+            $em->flush();
+            return $this->redirectToRoute('home');
+        }
+        return $this->render('post/form.html.twig', [
+            'post_form' => $form->createView()
+        ]);
+    }
+
+    #[Route('/post/copy/{id}', name: 'copy_post', requirements: ['id' => '\d+'])]
+    public function duplicate(Request $request, Post $post, ManagerRegistry $doctrine): Response
+    {
+
+        $copyPost = clone ($post);
+
+        $em = $doctrine->getManager();
+        $em->persist($copyPost);
+        $em->flush();
+        return $this->redirectToRoute('home');
     }
 }

@@ -9,7 +9,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\Post;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\LengthValidator;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PostType extends AbstractType
@@ -23,7 +22,7 @@ class PostType extends AbstractType
                 [
                     'label' => 'Titre',
                     'required' => false,
-                    'constraints' => new Length(min: 0, max: 150, maxMessage: 'Le titre ne doit pas faire plus de 150 caractères', minMessage: 'Le titre doit faire moins de 0 caractères')
+                    'constraints' => new Length(min: 2, max: 150, maxMessage: 'Le titre ne doit pas faire plus de 150 caractères', minMessage: 'Le titre doit faire moins de 0 caractères')
                 ]
             )
             ->add(
@@ -34,7 +33,7 @@ class PostType extends AbstractType
                     'required' => true,
                     'constraints' => [
                         new NotBlank(message: 'Le contenu ne doit pas être vide'),
-                        new LengthValidator(min: 5, max: 320, maxMessage: 'Le titre ne doit pas faire plus de 320 caractères', minMessage: 'Le titre doit faire moins de 5 caractères')
+                        new Length(min: 5, max: 320, maxMessage: 'Le titre ne doit pas faire plus de 320 caractères', minMessage: 'Le titre doit faire moins de 5 caractères')
                     ]
                 ]
             )
@@ -43,11 +42,11 @@ class PostType extends AbstractType
                 TextType::class,
                 [
                     'label' => 'Url de l\'image',
-                    'required' => true,
-                    'contstraints' => new NotBlank(message: 'L\'URL de l\'image ne doit pas etre vide')
+                    'required' => false,
                 ]
             );
     }
+
 
     public function configureOptions(OptionsResolver $resolver)
     {
