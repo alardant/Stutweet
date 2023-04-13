@@ -51,7 +51,10 @@ class PostType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Post::class
+            'data_class' => Post::class,
+            'csrf_protection' => true,
+            'csrf_fieldname' => '_token',
+            'csrf_token_id' => 'post_item'
         ]);
     }
 }

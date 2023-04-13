@@ -61,9 +61,7 @@ class PostController extends AbstractController
     {
 
         $form = $this->createForm(PostType::class, $post);
-
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $doctrine->getManager();
             $em->flush();

@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	{% if error %}
+
+		{{dump(error)}}
+		<div class="alert alert-danger">
+			{{error.messageKey}}
+		</div>
+	{% endif %}
+
+	<form class="container" method="post">
+		<label for="username">Nom d'utilisateur</label>
+		<input type="text" name="_username" id="username" value="{{last_username}}" class="form-control" required>
+		<label for="password">Mot de passe</label>
+		<input
+		type="text" name="_password" id="password" class="form-control" required>
+
+		{# Redirect after a successfull connexion #}
+		<input type="hidden" name="_target_path" value="/">
+		<input type="submit" value="Connexion" class="btn btn-success mt-3">
+	</form>
+{% endblock %}

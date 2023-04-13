@@ -46,6 +46,13 @@
 								</svg>
 							</button>
 						</form>
+						{% if app.user %}
+							Bienvenu
+							{{app.user.username}}
+							<a href="/logout">Se déconnecter</a>
+						{% else %}
+							<a href="/login">Se connecter</a>
+						{% endif %}
 					</div>
 				</div>
 			</nav>
@@ -54,3 +61,4 @@
 			</div>
 		</body>
 	</html>
+</body></html>
