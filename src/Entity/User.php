@@ -100,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPassword(string $password): self
     {
-        // Hash the received password with de method 'hashpassword' //
+        // Hash the received password with de method 'hashPassword' //
         $this->password = $this->passwordHasher->hashPassword($this, $password);
 
         return $this;

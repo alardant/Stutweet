@@ -1,7 +1,11 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-
+	{% for message in app.flashes('error') %}
+		<div class="flash-error alert alert-danger mt-3">
+			{{message}}
+		</div>
+	{% endfor %}
 	<div class="d-flex justify-content-around flex-wrap container mt-5">
 		{% for post in posts %}
 
@@ -14,14 +18,19 @@
 						<h5 class="card-title">{{post.title}}</h5>
 					{% endif %}
 					<p class="card-text">{{post.content}}</p>
-					{% if app.user %}
+					{% if app.user and app.user is same as(post.user) %}
 						<a href={{ path('delete_post', {'id' : post.id} ) }} class="btn btn-danger">Supprimer</a>
 						<a href={{ path('edit_post', {'id' : post.id} ) }} class="btn btn-warning">Modifier</a>
 						<a href={{ path('edit_post', {'id' : post.id} ) }} class="btn btn-primary">Copier</a>
 					{% endif %}
 				</div>
 				<div class="card-footer">
-					<small class="text-muted">{{post.user.username}}</small>
+					<small class="text-muted">Publié par
+						{{post.user.username}}
+						le
+						{{post.publishedAt | date("d/m/Y")}}
+						à
+						{{post.publishedAt | date("H:i")}}</small>
 				</div>
 			</div>
 		{% endfor %}
