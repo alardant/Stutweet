@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\Post;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -39,10 +41,25 @@ class PostType extends AbstractType
             )
             ->add(
                 'image',
-                TextType::class,
+                FileType::class,
                 [
-                    'label' => 'Url de l\'image',
+                    'label' => 'Télécharger une image',
+                    'mapped' => false,
                     'required' => false,
+                    'constraints' => [
+                        new File([
+                            'maxSize' => '5m',
+                            'mimeTypes' => [
+                                'image/jpeg',
+                                'image/gif',
+                                'image/svg',
+                                'image/png',
+                                'image/webp',
+                                'image/jpg'
+                            ],
+                            'mimeTypesMessage' => 'Veuillez proposer une image valide'
+                        ])
+                    ]
                 ]
             );
     }

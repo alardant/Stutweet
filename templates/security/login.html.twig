@@ -3,9 +3,8 @@
 {% block body %}
 	{% if error %}
 
-		{{dump(error)}}
-		<div class="alert alert-danger">
-			{{error.messageKey}}
+		<div class="alert alert-danger mt-2">
+			<p calss="mb-0">Les informations d'identifications sont invalides.</p>
 		</div>
 	{% endif %}
 

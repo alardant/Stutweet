@@ -11,7 +11,7 @@
 
 			<div class="card" style="width: 18rem;">
 				{% if post.image %}
-					<img class="card-img-top" src={{post.image}} alt={{post.title}}>
+					<img class="card-img-top" src={{ asset('uploads/' ~ post.image) }} alt={{post.title}}>
 				{% endif %}
 				<div class="card-body">
 					{% if post.title %}

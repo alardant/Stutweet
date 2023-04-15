@@ -7,17 +7,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\PostType;
-use DateTime;
+use App\Repository\PostRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class PostController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(ManagerRegistry $doctrine): Response
+    public function index(ManagerRegistry $doctrine, Request $request, PostRepository $repository): Response
     {
-        $repository = $doctrine->getRepository(Post::class);
+
+        $search = $request->request->get("search"); // $_POST('search') - le name doit etre cohérent avec celui du formulaire
         $posts = $repository->findAll();
+        if ($search) {
+            $posts = $repository->findBySearch($search);
+        }
 
         return $this->render(
             'post/index.html.twig',
@@ -28,7 +34,7 @@ class PostController extends AbstractController
     }
 
     #[Route('/post/new')]
-    public function create(Request $request, ManagerRegistry $doctrine): Response
+    public function create(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $post = new Post();
@@ -37,6 +43,28 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $image = $form->get('image')->getData();
+
+            if ($image) {
+                $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $image->guessExtension();
+
+                try {
+                    $image->move(
+                        $this->getParameter('uploads'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    dump($e); // A changer pour mieux traiter
+                }
+
+                $post->setImage($newFilename);
+            }
+
+
             $post->setUser($this->getUser());
             $post->setPublishedAt(new \DateTime());
             $em = $doctrine->getManager();
