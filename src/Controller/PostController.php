@@ -86,6 +86,13 @@ class PostController extends AbstractController
 
             return $this->redirectToRoute('home');
         }
+
+        $imageFileName = $post->getImage();
+        $pathToFile = 'uploads/' . $imageFileName;
+        if (file_exists($pathToFile)) {
+            unlink($pathToFile);
+        }
+
         $em = $doctrine->getManager();
         $em->remove($post);
         $em->flush();
